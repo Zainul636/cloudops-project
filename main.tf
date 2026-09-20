@@ -1,12 +1,21 @@
 provider "aws" {
-     region = "us-east-1"
-   }
+  region = "ap-south-1"
+}
 
-   resource "aws_instance" "cloudops_tf_server" {
-     ami           = "ami-0c02fb55956c7d316" 
-     instance_type = "t3.micro"  #Switch to t3.micro here
+data "aws_ami" "al2023" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.*-x86_64"]
+  }
+}
 
-     tags = {
-       Name = "cloudops-terraform-server"
-     }
-   }
+resource "aws_instance" "cloudops_tf_server" {
+  ami           = data.aws_ami.al2023.id
+  instance_type = "t3.micro"
+
+  tags = {
+    Name = "cloudops-terraform-server"
+  }
+}
